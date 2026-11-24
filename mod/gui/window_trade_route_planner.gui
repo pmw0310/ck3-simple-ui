@@ -2801,7 +2801,7 @@ types TradeRoutePlannerTypes
 		onclick = "[GetVariableSystem.Toggle( TradeGoodType.GetNameNoTooltip )]"
 		onclick = "[GetVariableSystem.Set( 'sui_map_custom_filter_on', 'yes' )]"
 		down = "[GetVariableSystem.Exists( TradeGoodType.GetNameNoTooltip )]"
-		tooltip = "[TradeGoodType.GetName]"
+		tooltipwidget = trade_good_type_tooltip
 
 		icon = {
 			parentanchor = center

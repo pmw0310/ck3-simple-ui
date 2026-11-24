@@ -1884,6 +1884,7 @@ window = {
 	# [SUI] START - 영지/건물 창을 닫지 않고 옆에 띄우는 독립 Simple 시장 창
 	sui_market_window = {}
 	sui_options_window = {}
+	sui_district_codex_window = {}
 	# [SUI] END
 }
 ######################################################
@@ -2502,6 +2503,7 @@ types CountyViewTypes {
 				min_height = 84
 				layoutpolicy_horizontal = expanding
 				onclick = "[GUIDistrictItem.OnClick]"
+			onclick = "[GetVariableSystem.Clear( 'selected_potential_district' )]"
 				down = "[GUIDistrictItem.IsHighlighted]"
 
 				tooltipwidget = {
@@ -3129,6 +3131,7 @@ types CountyViewTypes {
 			name = "district_button"
 			size = { 100% 100% }
 			onclick = "[GUIDistrictItem.OnClick]"
+			onclick = "[GetVariableSystem.Clear( 'selected_potential_district' )]"
 			down = "[GUIDistrictItem.IsHighlighted]"
 
 			vbox = {
@@ -3314,6 +3317,7 @@ types CountyViewTypes {
 			name = "district_button"
 			size = { 100% 100% }
 			onclick = "[GUIDistrictItem.OnClick]"
+			onclick = "[GetVariableSystem.Clear( 'selected_potential_district' )]"
 			down = "[GUIDistrictItem.IsHighlighted]"
 			enabled = "[Or( Not( GUIDistrictItem.IsEmptySlot ), GUIDistrictItem.IsDistrictButtonEnabled )]"
 			alpha = "[Select_float( GUIDistrictItem.IsDistrictInactive, '(float)0.5', '(float)1.0' )]"
@@ -3464,13 +3468,13 @@ types CountyViewTypes {
 		# [SUI] END
 
 		button_icon_can_upgrade = {
-			visible = "[GUIDistrictItem.HasImmediatelyUpgradableBuilding]"
+			visible = "[And( GUIDistrictItem.HasDistrict, GUIDistrictItem.HasImmediatelyUpgradableBuilding )]"
 			tooltip = "HOLDING_DISTRICT_CAN_UPGRADE_BUILDING_NOW"
 			parentanchor = top|left
 		}
 
 		widget_icon_can_build  = {
-			visible = "[GUIDistrictItem.HasImmediatelyConstructableBuilding]"
+			visible = "[And( GUIDistrictItem.HasDistrict, GUIDistrictItem.HasImmediatelyConstructableBuilding )]"
 			parentanchor = top|right
 		}
 
@@ -3505,6 +3509,7 @@ types CountyViewTypes {
 		name = "district_button"
 		size = { 100% 100% }
 		onclick = "[GUIDistrictItem.OnClick]"
+			onclick = "[GetVariableSystem.Clear( 'selected_potential_district' )]"
 		down = "[GUIDistrictItem.IsHighlighted]"
 		enabled = "[Or( Not( GUIDistrictItem.IsEmptySlot ), GUIDistrictItem.IsDistrictButtonEnabled )]"
 		alpha = "[Select_float( GUIDistrictItem.IsDistrictInactive, '(float)0.5', '(float)1.0' )]"
@@ -3784,13 +3789,13 @@ types CountyViewTypes {
 
 
 		button_icon_can_upgrade = {
-			visible = "[GUIDistrictItem.HasImmediatelyUpgradableBuilding]"
+			visible = "[And( GUIDistrictItem.HasDistrict, GUIDistrictItem.HasImmediatelyUpgradableBuilding )]"
 			tooltip = "HOLDING_DISTRICT_CAN_UPGRADE_BUILDING_NOW"
 			parentanchor = top|left
 		}
 
 		widget_icon_can_build  = {
-			visible = "[GUIDistrictItem.HasImmediatelyConstructableBuilding]"
+			visible = "[And( GUIDistrictItem.HasDistrict, GUIDistrictItem.HasImmediatelyConstructableBuilding )]"
 			parentanchor = top|right
 		}
 
@@ -7867,8 +7872,8 @@ types CountyViewTypes {
 				potential_item_costs = {}
 			}
 
+			# [SUI] START - 건설(망치) / 대기열(모래시계) 버튼 아이콘 구분
 			button_primary = {
-				text = "START_CONSTRUCTION"
 				using = tooltip_ne
 
 				visible = "[And( Not( GUIPotentialBuildingItem.IsSponsorConstructionVisible ), Or( GUIPotentialBuildingItem.CanConstruct, Not( GUIPotentialBuildingItem.CanQueue ) ) )]"
@@ -7876,10 +7881,28 @@ types CountyViewTypes {
 				onclick = "[GUIPotentialBuildingItem.Queue]"
 				onclick = "[GetVariableSystem.Clear( 'selected_potential_building' )]"
 				tooltip = "[GUIPotentialBuildingItem.GetTooltip( GetPlayer.Self )]"
+
+				flowcontainer = {
+					parentanchor = center
+					spacing = 6
+					alwaystransparent = yes
+
+					icon_flat_standard_gold = {
+						parentanchor = vcenter
+						size = { 18 18 }
+						texture = "gfx/interface/icons/flat_icons/hammer.dds"
+						alwaystransparent = yes
+					}
+					text_single = {
+						parentanchor = vcenter
+						text = "START_CONSTRUCTION"
+						align = nobaseline
+						alwaystransparent = yes
+					}
+				}
 			}
 
 			button_tertiary = {
-				text = "QUEUE_CONSTRUCTION"
 				using = tooltip_ne
 
 				visible = "[And( Not( GUIPotentialBuildingItem.IsSponsorConstructionVisible ), And( GUIPotentialBuildingItem.CanQueue, Not( GUIPotentialBuildingItem.CanConstruct ) ) )]"
@@ -7887,7 +7910,27 @@ types CountyViewTypes {
 				onclick = "[GUIPotentialBuildingItem.Queue]"
 				onclick = "[GetVariableSystem.Clear( 'selected_potential_building' )]"
 				tooltip = "[GUIPotentialBuildingItem.GetTooltip( GetPlayer.Self )]"
+
+				flowcontainer = {
+					parentanchor = center
+					spacing = 6
+					alwaystransparent = yes
+
+					icon = {
+						parentanchor = vcenter
+						size = { 18 18 }
+						texture = "gfx/interface/icons/icon_time.dds"
+						alwaystransparent = yes
+					}
+					text_single = {
+						parentanchor = vcenter
+						text = "QUEUE_CONSTRUCTION"
+						align = nobaseline
+						alwaystransparent = yes
+					}
+				}
 			}
+			# [SUI] END
 
 			button_primary = {
 				text = "merchant_sponsor_construction_button"
@@ -7947,6 +7990,43 @@ types CountyViewTypes {
 				layoutpolicy_vertical = expanding
 				layoutpolicy_horizontal = expanding
 				spacing = 4
+
+				# [SUI] START - 일반 지구 건설 시에만 상단 라벨형 도감 버튼 표시
+				hbox = {
+					visible = "[And( Not( Or3( HoldingView.GetGUIDuchyCapitalDistrict.IsHighlighted, HoldingView.GetGUISpecialDistrict.IsHighlighted, HoldingView.GetGUIResourceDistrict.IsHighlighted ) ), Not( Or( HoldingView.GetGUITradePostDistrict.IsHighlighted, HoldingView.GetGUIEntrepotDistrict.IsHighlighted ) ) )]"
+					layoutpolicy_horizontal = expanding
+					margin = { 8 0 }
+
+					button_standard = {
+						size = { 210 26 }
+						down = "[GetVariableSystem.Exists( 'sui_district_codex_open' )]"
+						onclick = "[GetVariableSystem.Toggle( 'sui_district_codex_open' )]"
+						tooltip = "SUI_CODEX_BTN_TT"
+
+						flowcontainer = {
+							parentanchor = center
+							spacing = 6
+							alwaystransparent = yes
+
+							icon_flat_standard_gold = {
+								parentanchor = vcenter
+								size = { 16 16 }
+								texture = "gfx/interface/icons/flat_icons/outliner.dds"
+								alwaystransparent = yes
+							}
+							text_single = {
+								parentanchor = vcenter
+								text = "SUI_CODEX_TITLE"
+								fontsize = 14
+								align = nobaseline
+								alwaystransparent = yes
+							}
+						}
+					}
+
+					expand = {}
+				}
+				# [SUI] END
 
 				scrollarea = {
 					layoutpolicy_horizontal = expanding
@@ -8254,8 +8334,8 @@ types CountyViewTypes {
 									potential_item_costs = {}
 								}
 
+								# [SUI] START - 지구 건설(망치) / 대기열(모래시계) 버튼 아이콘 구분
 								button_primary = {
-									text = "START_CONSTRUCTION"
 									using = tooltip_ne
 
 									visible = "[And( Not( GUIPotentialDistrictItem.IsSponsorConstructionVisible ), Or( GUIPotentialDistrictItem.CanConstruct, Not( GUIPotentialDistrictItem.CanQueue ) ) )]"
@@ -8264,10 +8344,28 @@ types CountyViewTypes {
 									onclick = "[GetVariableSystem.Clear( 'selected_potential_district' )]"
 									clicksound = "event:/DLC/EP5/SFX/UIX/ep5_uix_district_build_start"
 									tooltip = "[GUIPotentialDistrictItem.GetTooltip( GetPlayer.Self )]"
+
+									flowcontainer = {
+										parentanchor = center
+										spacing = 6
+										alwaystransparent = yes
+
+										icon_flat_standard_gold = {
+											parentanchor = vcenter
+											size = { 18 18 }
+											texture = "gfx/interface/icons/flat_icons/hammer.dds"
+											alwaystransparent = yes
+										}
+										text_single = {
+											parentanchor = vcenter
+											text = "START_CONSTRUCTION"
+											align = nobaseline
+											alwaystransparent = yes
+										}
+									}
 								}
 
 								button_tertiary = {
-									text = "QUEUE_CONSTRUCTION"
 									using = tooltip_ne
 
 									visible = "[And( Not( GUIPotentialDistrictItem.IsSponsorConstructionVisible ), And( GUIPotentialDistrictItem.CanQueue, Not( GUIPotentialDistrictItem.CanConstruct ) ) )]"
@@ -8275,7 +8373,27 @@ types CountyViewTypes {
 									onclick = "[GUIPotentialDistrictItem.Queue]"
 									clicksound = "event:/DLC/EP5/SFX/UIX/ep5_uix_district_build_start"
 									tooltip = "[GUIPotentialDistrictItem.GetTooltip( GetPlayer.Self )]"
+
+									flowcontainer = {
+										parentanchor = center
+										spacing = 6
+										alwaystransparent = yes
+
+										icon = {
+											parentanchor = vcenter
+											size = { 18 18 }
+											texture = "gfx/interface/icons/icon_time.dds"
+											alwaystransparent = yes
+										}
+										text_single = {
+											parentanchor = vcenter
+											text = "QUEUE_CONSTRUCTION"
+											align = nobaseline
+											alwaystransparent = yes
+										}
+									}
 								}
+								# [SUI] END
 
 								button_primary = {
 									text = "merchant_sponsor_construction_button"
@@ -8629,6 +8747,7 @@ types CountyViewTypes {
 			}
 		}
 
+		# [SUI] START - 강화/건설(망치) / 대기열(모래시계) 아이콘 구분 + 대기열 취소 버튼
 		container = {
 			name = "main_construction_button"
 			visible = "[And4( GUITrackItem.HasNextBuilding, Not( GUITrackItem.IsUpgradingWithGreatProject ), Not( GUITrackItem.IsGreatBuildingRuined ), Not( GUITrackItem.IsSponsorConstructionVisible ) )]"
@@ -8636,16 +8755,71 @@ types CountyViewTypes {
 			# Swaps between a primary look and a tertiary look depending on if it will queue the construction or not
 			button_primary = {
 				visible = "[Not( And3( GUITrackItem.CanQueueNextBuilding, Not( GUITrackItem.CanConstructNextBuilding ), Not( GUITrackItem.UpgradesViaGreatProject ) ))]"
-				text = "[SelectLocalization( EqualTo_int32( GUITrackItem.GetNextBuilding.GetLevel, '(int32)1' ), 'CONSTRUCT', Select_CString( GUITrackItem.UpgradesViaGreatProject, 'CONSTRUCT_BUILDING_PLAN_EXPANSION', 'UPGRADE' ) )]"
 				using = Main_Construction_Button
+
+				flowcontainer = {
+					parentanchor = center
+					spacing = 6
+					ignoreinvisible = yes
+					alwaystransparent = yes
+
+					icon_flat_standard_gold = {
+						visible = "[EqualTo_int32( GUITrackItem.GetNextBuilding.GetLevel, '(int32)1' )]"
+						parentanchor = vcenter
+						size = { 18 18 }
+						texture = "gfx/interface/icons/flat_icons/hammer.dds"
+						alwaystransparent = yes
+					}
+					icon = {
+						visible = "[Not( EqualTo_int32( GUITrackItem.GetNextBuilding.GetLevel, '(int32)1' ) )]"
+						parentanchor = vcenter
+						size = { 16 16 }
+						texture = "gfx/interface/icons/symbols/icon_arrow_up.dds"
+						alwaystransparent = yes
+					}
+					text_single = {
+						parentanchor = vcenter
+						text = "[SelectLocalization( EqualTo_int32( GUITrackItem.GetNextBuilding.GetLevel, '(int32)1' ), 'CONSTRUCT', Select_CString( GUITrackItem.UpgradesViaGreatProject, 'CONSTRUCT_BUILDING_PLAN_EXPANSION', 'UPGRADE' ) )]"
+						align = nobaseline
+						alwaystransparent = yes
+					}
+				}
 			}
 
 			button_tertiary = {
 				visible = "[And3( GUITrackItem.CanQueueNextBuilding, Not( GUITrackItem.CanConstructNextBuilding ), Not( GUITrackItem.UpgradesViaGreatProject ) )]"
-				text = "[SelectLocalization( EqualTo_int32( GUITrackItem.GetNextBuilding.GetLevel, '(int32)1' ), 'QUEUE_CONSTRUCTION', 'QUEUE_UPGRADE' )]"
 				using = Main_Construction_Button
+
+				flowcontainer = {
+					parentanchor = center
+					spacing = 5
+					ignoreinvisible = yes
+					alwaystransparent = yes
+
+					icon = {
+						parentanchor = vcenter
+						size = { 17 17 }
+						texture = "gfx/interface/icons/icon_time.dds"
+						alwaystransparent = yes
+					}
+					icon = {
+						visible = "[Not( EqualTo_int32( GUITrackItem.GetNextBuilding.GetLevel, '(int32)1' ) )]"
+						parentanchor = vcenter
+						size = { 14 14 }
+						texture = "gfx/interface/icons/symbols/icon_arrow_up.dds"
+						alwaystransparent = yes
+					}
+					text_single = {
+						parentanchor = vcenter
+						text = "[SelectLocalization( EqualTo_int32( GUITrackItem.GetNextBuilding.GetLevel, '(int32)1' ), 'QUEUE_CONSTRUCTION', 'QUEUE_UPGRADE' )]"
+						align = nobaseline
+						alwaystransparent = yes
+					}
+				}
 			}
 		}
+
+		# [SUI] END
 
 		button_primary = {
 			name = "merchant_sponsor_construction_tutorial_uses_this"
