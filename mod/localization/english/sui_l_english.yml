@@ -31,7 +31,7 @@
  SUI_INTERACTION_SHOW_ALL_GOODS:0 "Show All Goods"
  SUI_CKTO_HINT_NO_MARKET:0 "Select a starting market on the map to enable automation"
  SUI_CKTO_HINT_NO_GOOD:0 "Select a good below to enable automation"
- SUI_MARKET_FOOTER_LEGEND:0 "#high [HoldingView.GetCountyTitle.GetNameNoTierNoTooltip]#! #weak Borders: #P Green#! Produced Surplus · #N Red#! Holding Need#!"
+ SUI_MARKET_FOOTER_LEGEND:0 "#high [HoldingView.GetCountyTitle.GetNameNoTierNoTooltip]#! #weak Borders: #trade_surplus Blue#! Produced Surplus · #trade_need Amber#! Holding Need#!"
  SUI_OPTIONS_TITLE:0 "Simple UI Building Options"
  SUI_OPTIONS_BTN_TT:0 "#T Simple UI Display Options#!
 Toggle building and district display features in real time."
