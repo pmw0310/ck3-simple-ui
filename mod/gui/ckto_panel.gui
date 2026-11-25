@@ -137,121 +137,9 @@ type ckto_panel = vbox {
           blockoverride "text" { text = "ckto_side" using = Font_Size_Small }
         }
 
-        button_checkbox_label = {
-          visible = "[GetPlayer.HasCompanyTitle]"
-          onclick = "[GetVariableSystem.Toggle('ckto_crew')]"
-          tooltip = "ckto_crew_tt"
-          blockoverride "checkbox" { checked = "[GetVariableSystem.Exists('ckto_crew')]" size = { 20 20 } }
-          blockoverride "text" { text = "ckto_crew" using = Font_Size_Small }
-        }
-
         expand = {}
       }
-
-      vbox = {
-        visible = "[GetPlayer.HasCompanyTitle]"
-        enabled = "[GetVariableSystem.Exists('ckto_crew')]"
-        alpha = "[Select_float( GetVariableSystem.Exists('ckto_crew'), '(float)1.0', '(float)0.45' )]"
-        layoutpolicy_horizontal = expanding
-        spacing = 2
-    # [SUI] END
-        # [SUI] START - 무역상 임무 옵션을 아이콘 포함 1행 3열(최고 수익 / 전문성 우선 / 효율 우선)로 정리
-        hbox = {
-          layoutpolicy_horizontal = expanding
-          spacing = 6
-
-          button_standard = {
-            layoutpolicy_horizontal = expanding
-            size = { 0 26 }
-            down = "[Not(Or(Or(GetVariableSystem.HasValue('ckto_task', 'manage_competition'), GetVariableSystem.HasValue('ckto_task', 'negotiate_deals')), GetVariableSystem.HasValue('ckto_task', 'oversee_caravans')))]"
-            tooltip = "ckto_task_profit_tt"
-            onclick = "[GetVariableSystem.Clear('ckto_task')]"
-
-            flowcontainer = {
-              parentanchor = center
-              direction = horizontal
-              spacing = 3
-              alwaystransparent = yes
-
-              icon = {
-                size = { 16 16 }
-                parentanchor = vcenter
-                texture = "gfx/interface/icons/icon_gold.dds"
-                alwaystransparent = yes
-              }
-
-              text_single = {
-                parentanchor = vcenter
-                text = "ckto_task_profit"
-                fontsize = 14
-                align = nobaseline
-                alwaystransparent = yes
-              }
-            }
-          }
-
-          button_standard = {
-            layoutpolicy_horizontal = expanding
-            size = { 0 26 }
-            down = "[GetVariableSystem.HasValue('ckto_task', 'negotiate_deals')]"
-            tooltip = "SUI_CKTO_TASK_NEGO_TT"
-            onclick = "[GetVariableSystem.Set('ckto_task', 'negotiate_deals')]"
-
-            flowcontainer = {
-              parentanchor = center
-              direction = horizontal
-              spacing = 3
-              alwaystransparent = yes
-
-              icon = {
-                size = { 16 16 }
-                parentanchor = vcenter
-                texture = "gfx/interface/icons/trade/acumen.dds"
-                alwaystransparent = yes
-              }
-
-              text_single = {
-                parentanchor = vcenter
-                text = "SUI_CKTO_TASK_NEGO"
-                fontsize = 14
-                align = nobaseline
-                alwaystransparent = yes
-              }
-            }
-          }
-
-          button_standard = {
-            layoutpolicy_horizontal = expanding
-            size = { 0 26 }
-            down = "[GetVariableSystem.HasValue('ckto_task', 'oversee_caravans')]"
-            tooltip = "SUI_CKTO_TASK_CARAVAN_TT"
-            onclick = "[GetVariableSystem.Set('ckto_task', 'oversee_caravans')]"
-
-            flowcontainer = {
-              parentanchor = center
-              direction = horizontal
-              spacing = 3
-              alwaystransparent = yes
-
-              icon = {
-                size = { 16 16 }
-                parentanchor = vcenter
-                texture = "gfx/interface/icons/trade/icon_trade_capacity.dds"
-                alwaystransparent = yes
-              }
-
-              text_single = {
-                parentanchor = vcenter
-                text = "SUI_CKTO_TASK_CARAVAN"
-                fontsize = 14
-                align = nobaseline
-                alwaystransparent = yes
-              }
-            }
-          }
-        }
-        # [SUI] END
-      }
+      # [SUI] END
     }
   }
 
@@ -268,6 +156,7 @@ type ckto_panel = vbox {
       enabled = "[And(TradeRoutePlanner.HasStartMarket, Or(Not(GetVariableSystem.Exists('ckto_locked')), TradeRoutePlanner.HasSelectedTradeGoodType))]"
       alpha = "[Select_float( And(TradeRoutePlanner.HasStartMarket, Or(Not(GetVariableSystem.Exists('ckto_locked')), TradeRoutePlanner.HasSelectedTradeGoodType)), '(float)1.0', '(float)0.4' )]"
       tooltip = "ckto_help"
+      onclick = "[GetVariableSystem.Clear('ckto_crew')]"
       onclick = "[GetVariableSystem.Set('ckto_phase', 'route')]"
 
       flowcontainer = {
